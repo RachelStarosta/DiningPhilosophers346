@@ -2,7 +2,7 @@ import common.BaseThread;
 
 /**
  * Class Philosopher.
- * Outlines main subrutines of our virtual philosopher.
+ * Outlines main subroutines of our virtual philosopher.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
  */
@@ -74,11 +74,11 @@ public class Philosopher extends BaseThread
 	{
 		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
 		{
-			DiningPhilosophers.soMonitor.pickUp(getTID());
+			//DiningPhilosophers.soMonitor.pickUp(getTID());
 
 			eat();
 
-			DiningPhilosophers.soMonitor.putDown(getTID());
+			//DiningPhilosophers.soMonitor.putDown(getTID());
 
 			think();
 
@@ -94,7 +94,7 @@ public class Philosopher extends BaseThread
 				// ...
 			}
 
-			yield();
+			this.yield();
 		}
 	} // run()
 
