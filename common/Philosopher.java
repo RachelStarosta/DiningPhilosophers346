@@ -1,7 +1,9 @@
-import common.BaseThread;
+package common;
 
+import common.BaseThread;
+import common.Monitor;
 /**
- * Class Philosopher.
+ * Class common.Philosopher.
  * Outlines main subroutines of our virtual philosopher.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
@@ -25,13 +27,18 @@ public class Philosopher extends BaseThread
 	{
 		try
 		{
-			// ...
+
+			System.out.println("Philosopher: " + getTID() + " has started eating");
+
 			sleep((long)(Math.random() * TIME_TO_WASTE));
+
+			System.out.println("Philosopher: " + getTID() + " has finished eating");
+
 			// ...
 		}
 		catch(InterruptedException e)
 		{
-			System.err.println("Philosopher.eat():");
+			System.err.println("common.Philosopher.eat():");
 			DiningPhilosophers.reportException(e);
 			System.exit(1);
 		}
@@ -47,7 +54,18 @@ public class Philosopher extends BaseThread
 	 */
 	public void think()
 	{
-		// ...
+		System.out.println("Philosopher: " + getTID() + " has started thinking");
+		this.yield();
+		try{
+			this.sleep((long)Math.round(Math.random()*500));
+			//*The thread can sleep from 0 to 5 seconds
+		}
+		catch(InterruptedException e) {
+			System.out.println("Philosopher: " + getTID() + " has been interrupted while thinking");
+		}
+		this.yield();
+		 System.out.println("Philosopher: " + getTID() + " is done thinking");
+
 	}
 
 	/**
@@ -60,11 +78,18 @@ public class Philosopher extends BaseThread
 	 */
 	public void talk()
 	{
-		// ...
+		System.out.println("Philosopher: " + getTID() + " has started talking");
+		this.yield();
+		try{
+			this.saySomething();
+			this.sleep(1000);
+		}
+		catch(InterruptedException e) {
+			System.out.println("Philosopher: " + getTID() + " has been interrupted while talking");
+		}
+		this.yield();
+		System.out.println("Philosopher: " + getTID() + " is done talking");
 
-		saySomething();
-
-		// ...
 	}
 
 	/**
@@ -74,11 +99,11 @@ public class Philosopher extends BaseThread
 	{
 		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
 		{
-			//DiningPhilosophers.soMonitor.pickUp(getTID());
+			common.DiningPhilosophers.soMonitor.pickUp(getTID());
 
 			eat();
 
-			//DiningPhilosophers.soMonitor.putDown(getTID());
+			common.DiningPhilosophers.soMonitor.putDown(getTID());
 
 			think();
 
@@ -86,12 +111,17 @@ public class Philosopher extends BaseThread
 			 * TODO:
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
+			 * So generate a random var
 			 */
-			if(true == false)
+			int talkDecision = (int) Math.round((Math.random()*4));
+			if(talkDecision > 2)
 			{
-				// Some monitor ops down here...
+				common.DiningPhilosophers.soMonitor.requestTalk();
+
 				talk();
-				// ...
+
+				common.DiningPhilosophers.soMonitor.endTalk();
+
 			}
 
 			this.yield();
@@ -110,7 +140,14 @@ public class Philosopher extends BaseThread
 			"You know, true is false and false is true if you think of it",
 			"2 + 2 = 5 for extremely large values of 2...",
 			"If thee cannot speak, thee must be silent",
+			"The present is pregnant with the future, the future can be read in the past; \n the distant is expressed in the approximate. \n " +
+					"One could know the beauty of the universe in each soul, if one could unfold all its folds, \n" +
+					"which only open perceptibly with time." ,
+
+
+
 			"My number is " + getTID() + ""
+
 		};
 
 		System.out.println

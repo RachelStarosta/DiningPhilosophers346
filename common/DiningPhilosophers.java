@@ -1,6 +1,9 @@
+package common;
+
+
 
 /**
- * Class DiningPhilosophers
+ * Class common.DiningPhilosophers
  * The main starter.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca
@@ -15,12 +18,14 @@ public class DiningPhilosophers
 
 	/**
 	 * This default may be overridden from the command line
+	 * don't touch
 	 */
 	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 4;
 
 	/**
 	 * Dining "iterations" per philosopher thread
 	 * while they are socializing there
+	 * don't touch
 	 */
 	public static final int DINING_STEPS = 10;
 
