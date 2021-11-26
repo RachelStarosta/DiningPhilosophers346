@@ -11,13 +11,15 @@ public class Monitor
 	/*
 	 * ------------
 	 * Data members
+	 * In order to prevent starvation it would be good to keep a count of the number of times a philosopher has
+	 * already eaten
 	 * ------------
 	 */
-	public enum state {THINKING, EATING, TALKING};
-	public state [] philAction ;    //The size of the array will depend on the number of philosophers
+	public enum state {THINKING, EATING, TALKING, HUNGRY};   //hungry
+	public state [] PhS ;    //The size of the array will depend on the number of philosophers
 
+				//PhS = Philosopher State array
 
-	public int chopstickTotal;
 
 	/**
 	 * Constructor
@@ -26,16 +28,16 @@ public class Monitor
 	{
 
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
-		chopstickTotal = piNumberOfPhilosophers;  //FYI the default number is 4 philosophers
+
 		/*
 		The self array will contain the current state of the philosopher
 		The constructor will give the philosophers the default state of thinking
 		 */
-		philAction = new state [piNumberOfPhilosophers];
+		PhS = new state [piNumberOfPhilosophers];
 
 		int x = 0;
-		for (state s: philAction){    //checked ->debugged separately
-			philAction[x] = state.THINKING;
+		for (state s: PhS){    //checked
+			PhS[x] = state.THINKING;
 			x++;
 		}
 	}
@@ -52,6 +54,13 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{
+		//check left and right philosopher to see if the chopsticks are available
+		PhS[piTID] = state.HUNGRY;
+		//Check the states of the surrounding philosophers. Checking:
+
+
+
+
 
 
 	}
