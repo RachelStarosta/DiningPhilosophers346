@@ -29,9 +29,9 @@ public class Philosopher extends BaseThread
 		{
 
 			System.out.println("Philosopher: " + getTID() + " has started eating");
-
+			this.yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
-
+			this.yield();
 			System.out.println("Philosopher: " + getTID() + " has finished eating");
 
 			// ...
@@ -55,7 +55,7 @@ public class Philosopher extends BaseThread
 	public void think()
 	{
 		System.out.println("Philosopher: " + getTID() + " has started thinking");
-		this.randomYield();
+		this.yield();
 		try{
 			this.sleep((long)Math.round(Math.random()*500));
 			//*The thread can sleep from 0 to 5 seconds
@@ -63,7 +63,7 @@ public class Philosopher extends BaseThread
 		catch(InterruptedException e) {
 			System.out.println("Philosopher: " + getTID() + " has been interrupted while thinking");
 		}
-		this.randomYield();
+		this.yield();
 		 System.out.println("Philosopher: " + getTID() + " is done thinking");
 
 	}
@@ -79,7 +79,7 @@ public class Philosopher extends BaseThread
 	public void talk()
 	{
 		System.out.println("Philosopher: " + getTID() + " has started talking");
-		this.randomYield();
+		this.yield();
 		try{
 			this.saySomething();
 			this.sleep(1000);
@@ -87,7 +87,7 @@ public class Philosopher extends BaseThread
 		catch(InterruptedException e) {
 			System.out.println("Philosopher: " + getTID() + " has been interrupted while talking");
 		}
-		this.randomYield();
+		this.yield();
 		System.out.println("Philosopher: " + getTID() + " is done talking");
 
 	}

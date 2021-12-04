@@ -18,16 +18,16 @@ public class Monitor
 	public enum state {THINKING, EATING, TALKING, HUNGRY};  //confused on how to implement the talking state
 	public state [] PhS ;    //The size of the array will depend on the number of philosophers
 			//PhS = Philosopher State array
-	public int [] noStarve;  //To make sure that each philosopher gets a fair turn to eat
+	public int [] times_eaten;  //To make sure that each philosopher gets a fair turn to eat
 	public static boolean SILENCE = true;
-	public int N ;  //The number of philosophers
+	public int N;  //The number of philosophers
 
 	/**
 	 * Constructor
 	 */
 	public Monitor(int piNumberOfPhilosophers)
 	{
-
+		N = piNumberOfPhilosophers;
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 
 		/*
@@ -35,10 +35,10 @@ public class Monitor
 		The constructor will give the philosophers the default state of thinking
 		 */
 		PhS = new state [piNumberOfPhilosophers];
-		noStarve = new int[piNumberOfPhilosophers];
+		times_eaten = new int[piNumberOfPhilosophers];
 		int i;
 		for(i = 0; i<N; i++){
-			noStarve[i] = 0;
+			times_eaten[i] = 0;
 
 		}
 
@@ -66,17 +66,18 @@ public class Monitor
 		PhS[x] = state.HUNGRY;
 		//Check the states of the surrounding philosophers. Checking:
 		try {
-			if ((PhS[((x+N) - 1) % N] == state.EATING) || (PhS[(x + 1) % N] == state.EATING)) {
+			while ((PhS[((x + N) - 1) % N] == state.EATING) || (PhS[(x + 1) % N] == state.EATING)) {
 				wait();  //if either surrounding philosopher is eating wait
 			}
-			//in order to prevent starvation compare the # of times each surrounding
+			// in order to prevent starvation compare the # of times each surrounding
 			// philosopher has eaten, if they have eaten less wait again and let them eat first
-			if(((noStarve[(x+N-1)%N] < noStarve[x])&&((PhS[((x+N) - 1) % N] == state.HUNGRY))) || ((noStarve[(x+1)%N] < noStarve[x])&&((PhS[(x+1) % N] == state.HUNGRY)))){
-				wait();
+			while (((times_eaten[(x+N-1)%N] < times_eaten[x]) && ((PhS[((x+N) - 1) % N] == state.HUNGRY))) || ((times_eaten[(x+1)%N] < times_eaten[x])&&((PhS[(x+1) % N] == state.HUNGRY)))){
+				wait(); // Enter block state until you get notify call from another thread - Thread blocked
+				// In putdown, notify
 			}
-			//both chopsticks are free and this current philosopher can begin eating
+			// both chopsticks are free and this current philosopher can begin eating
 			PhS[x] = state.EATING;
-			noStarve[x] += 1;
+			times_eaten[x] += 1;
 		}
 		catch(InterruptedException e){
 
@@ -90,12 +91,10 @@ public class Monitor
 	 */
 	public synchronized void putDown(final int piTID)
 	{
-		//Time to let go of the chopsticks and go back to thinking, notifyAll() to signal other
-		//philosophers for them to be able to eat
-			int x = piTID;
-			PhS[x] = state.THINKING;
+		// Time to let go of the chopsticks and go back to thinking, notifyAll() to signal other
+		// philosophers for them to be able to eat
+			PhS[piTID] = state.THINKING;
 			notifyAll();
-
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class Monitor
 
 		while(!isSpeaking) {
 			try {
-				if (SILENCE == false) {
+				if (!SILENCE) {
 					wait();
 				}
 				else{
@@ -130,8 +129,8 @@ public class Monitor
 	 */
 	public synchronized void endTalk()
 	{
-		//check to make sure that philosopher is still speaking
-		if(SILENCE == false){
+		// check to make sure that philosopher is still speaking
+		if(!SILENCE){
 			SILENCE = true;
 		}
 		notifyAll();

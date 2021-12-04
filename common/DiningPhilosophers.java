@@ -1,6 +1,7 @@
 package common;
 
 
+import java.util.Arrays;
 
 /**
  * Class common.DiningPhilosophers
@@ -54,6 +55,15 @@ public class DiningPhilosophers
 			 */
 			int iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 
+			if (argv.length > 0) {
+				int num_philosophers = Integer.parseInt(argv[0]);
+				if (num_philosophers < 1) {
+					throw new NumberFormatException();
+				}
+				iPhilosophers = num_philosophers;
+			}
+
+
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 
@@ -79,6 +89,9 @@ public class DiningPhilosophers
 				aoPhilosophers[j].join();
 
 			System.out.println("All philosophers have left. System terminates normally.");
+		}
+		catch(NumberFormatException e){
+			System.err.println(argv[0] + " is not a valid positive integer.");
 		}
 		catch(InterruptedException e)
 		{
